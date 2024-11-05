@@ -1,7 +1,7 @@
 ﻿using LetsGetFunctional.Monads;
 
 // Monads
-int theAnswer = 42;
+const int theAnswer = 42;
 // Implicit conversion of int instead of using new()
 Box<int> box = theAnswer;
 Console.WriteLine($"The contents of my box is initially is '{box.Item}'");
@@ -28,13 +28,13 @@ static Box<int[]> BindFunction(int[] numbers) => new(numbers.Select(x => x + 1).
 Box<int> numberHolder = new(25);
 Box<string> stringHolder = new("Twenty Five");
 
-Box<string> stringResult = numberHolder.Map(i => "I have been transformed");
+Box<string> stringResult = numberHolder.Map(_ => "I have been transformed");
 
 // The Box is no longer valid after new Box<int>() so it will short-circuit and return an empty box
 Box<string> resultsFromChaining = stringHolder
     .Bind(s => new Box<int>(s.Length))
-    .Bind(i => new Box<int>())
-    .Bind(i => new Box<string>("I am back!"));
+    .Bind(_ => new Box<int>())
+    .Bind(_ => new Box<string>("I am back!"));
 
 Console.WriteLine($"The contents of my number holder is now '{stringResult.Item}'");
 Console.WriteLine($"The contents of my string holder is now '{resultsFromChaining.Item}'");
@@ -57,10 +57,10 @@ static Box<int[]> DoubleBoxBind(Box<int[]> boxOfNumbers) => boxOfNumbers.Bind(Do
 static Box<int[]> DoubleBoxMap(Box<int[]> boxOfNumbers) => boxOfNumbers.Map(DoubleNumbersNoBox);
 static Box<int[]> DoubleBoxMany(Box<int[]> boxOfNumbers) => boxOfNumbers.SelectMany(
     DoubleNumbers,
-    (original, doubled) => doubled);
+    (_, doubled) => doubled);
 static Box<int[]> AddBoxMany(Box<int[]> boxOfNumbers) => boxOfNumbers.SelectMany(
     AddNumbers,
-    (original, combined) => combined);
+    (_, combined) => combined);
 
 static Box<int[]> DoubleNumbers(int[] extract) => new(extract.Select(x => x * 2).ToArray());
 static int[] DoubleNumbersNoBox(int[] extract) => extract.Select(x => x * 2).ToArray();
