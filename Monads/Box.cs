@@ -1,5 +1,4 @@
-﻿
-namespace LetsGetFunctional.Monads;
+﻿namespace LetsGetFunctional.Monads;
 
 public class Box<T>
 {
@@ -15,8 +14,6 @@ public class Box<T>
         IsEmpty = false;
     }
 
-    public static implicit operator Box<T>(T value) => new(value) { IsEmpty = false };
-
     public bool IsEmpty { get; private set; } = true;
 
     public T Item
@@ -28,6 +25,8 @@ public class Box<T>
             IsEmpty = false;
         }
     }
+
+    public static implicit operator Box<T>(T value) => new(value) { IsEmpty = false };
 }
 
 public static class BoxMethods
@@ -44,11 +43,12 @@ public static class BoxMethods
         ? new Box<TOut>()
         : new Box<TOut>(select(box.Item));
 
-    public static Box<TOut> SelectMany<TIn, TBind, TOut>(this Box<TIn> box, Func<TIn, Box<TBind>> bind, Func<TIn, TBind, TOut> project) => box.IsEmpty
+    public static Box<TOut> SelectMany<TIn, TBind, TOut>(this Box<TIn> box, Func<TIn, Box<TBind>> bind,
+        Func<TIn, TBind, TOut> project) => box.IsEmpty
         ? new Box<TOut>()
         : bind(box.Item) switch
         {
             { IsEmpty: true } => new Box<TOut>(),
-            Box<TBind> liftedResult => new Box<TOut>(project(box.Item, liftedResult.Item))
+            { } liftedResult => new Box<TOut>(project(box.Item, liftedResult.Item))
         };
 }
