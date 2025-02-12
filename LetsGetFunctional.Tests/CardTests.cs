@@ -1,4 +1,6 @@
-﻿namespace LetsGetFunctional.Tests;
+﻿using LetsGetFunctional.Poker;
+
+namespace LetsGetFunctional.Tests;
 
 public class CardTests
 {
@@ -80,71 +82,4 @@ public class CardTests
         hand.Draw(new Card(CardValue.Six, CardSuit.Spades));
         Assert.Equal(HandRank.Flush, hand.GetHandRank());
     }
-}
-
-public class Hand
-{
-    public List<Card> Cards { get; } = [];
-
-    public void Draw(Card card)
-    {
-        Cards.Add(card);
-    }
-
-    public Card HighCard()
-    {
-        return Cards.OrderByDescending(card => card.Value).First();
-    }
-
-    public HandRank GetHandRank()
-    {
-        return Cards.Any(card => CardValue.King == card.Value) ? HandRank.HighCard : HandRank.Flush;
-    }
-}
-
-public class Card(CardValue value, CardSuit suit)
-{
-    public CardValue Value { get; } = value;
-    public CardSuit Suit { get; } = suit;
-    
-    public override string ToString() => $"{Value} of {Suit}";
-}
-
-public enum CardSuit
-{
-    Spades,
-    Diamonds,
-    Clubs,
-    Hearts
-}
-
-public enum CardValue
-{
-    Two = 2,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-    Jack,
-    Queen,
-    King,
-    Ace
-}
-
-public enum HandRank
-{
-    HighCard,
-    Pair,
-    TwoPair,
-    ThreeOfAKind,
-    Straight,
-    Flush,
-    FullHouse,
-    FourOfAKind,
-    StraightFlush,
-    RoyalFlush
 }
